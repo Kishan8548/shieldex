@@ -2,7 +2,7 @@ import time
 import math
 import logging
 from dataclasses import dataclass, field, asdict
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from collections import deque
 
@@ -72,9 +72,9 @@ class SpikeDetector:
         state.recent_scores.append(fraud_score)
         state.last_updated = time.time()
 
-    def _compute_z_score(self, state: MerchantState, x: float) -> float:
-        stddev = math.sqrt(max(state.ewma_var, 1e-9))
-        return (x - state.ewma_mean) / stddev
+    def _compute_z_score(self, mean: float, var: float, x: float) -> float:
+        stddev = math.sqrt(max(var, 0.0025))  # floor stddev at 0.05
+        return (x - mean) / stddev
 
     def _make_alert_id(self):
         self._alert_counter += 1
@@ -83,13 +83,17 @@ class SpikeDetector:
     def update(self, merchant_id: str, fraud_score: float,
                timestamp: Optional[datetime] = None) -> Optional[SpikeAlert]:
         state = self._get_or_create_state(merchant_id)
-        pre_update_mean = state.ewma_mean
+        pre_mean = state.ewma_mean
+        pre_var = state.ewma_var
+
+        # Compute z-score against pre-update baseline
+        z_score = self._compute_z_score(pre_mean, pre_var, fraud_score)
+
+        # Now update EWMA for subsequent transactions
         self._update_ewma(state, fraud_score)
 
         if state.n_observations < self.min_observations:
             return None
-
-        z_score = self._compute_z_score(state, fraud_score)
 
         if merchant_id in self._active_alerts and z_score < self.z_threshold:
             del self._active_alerts[merchant_id]
@@ -101,10 +105,10 @@ class SpikeDetector:
             alert = SpikeAlert(
                 merchant_id=merchant_id,
                 alert_id=alert_id,
-                fired_at=(timestamp or datetime.utcnow()).isoformat(),
+                fired_at=(timestamp or datetime.now(timezone.utc)).isoformat(),
                 z_score=round(z_score, 3),
                 current_fraud_rate=round(fraud_score, 4),
-                baseline_fraud_rate=round(pre_update_mean, 4),
+                baseline_fraud_rate=round(pre_mean, 4),
                 transactions_in_window=min(state.n_observations, len(state.recent_scores)),
                 severity=severity,
             )
