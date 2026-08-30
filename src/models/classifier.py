@@ -29,12 +29,12 @@ def train_baseline(X_train, y_train, X_val, y_val):
     return model, {"pr_auc": pr_auc, "model": "logistic_regression"}
 
 
-def tune_lightgbm(X_train, y_train, X_val, y_val, n_trials=50):
+def tune_lightgbm(X_train, y_train, X_val, y_val, n_trials=30):
     scale_pos_weight = float((y_train == 0).sum()) / float((y_train == 1).sum())
 
     def objective(trial):
         params = {
-            "n_estimators": trial.suggest_int("n_estimators", 100, 1000),
+            "n_estimators": trial.suggest_int("n_estimators", 100, 800),
             "num_leaves": trial.suggest_int("num_leaves", 15, 127),
             "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
             "min_child_samples": trial.suggest_int("min_child_samples", 5, 100),
@@ -52,7 +52,7 @@ def tune_lightgbm(X_train, y_train, X_val, y_val, n_trials=50):
         model.fit(
             X_train, y_train,
             eval_set=[(X_val, y_val)],
-            callbacks=[lgb.early_stopping(50, verbose=False), lgb.log_evaluation(period=-1)],
+            callbacks=[lgb.early_stopping(50, verbose=False), lgb.log_evaluation(period=0)],
         )
         return average_precision_score(y_val, model.predict_proba(X_val)[:, 1])
 
@@ -70,12 +70,12 @@ def tune_lightgbm(X_train, y_train, X_val, y_val, n_trials=50):
     return best_model, best_params, {"pr_auc": pr_auc, "model": "lightgbm"}
 
 
-def tune_xgboost(X_train, y_train, X_val, y_val, n_trials=50):
+def tune_xgboost(X_train, y_train, X_val, y_val, n_trials=30):
     scale_pos_weight = float((y_train == 0).sum()) / float((y_train == 1).sum())
 
     def objective(trial):
         params = {
-            "n_estimators": trial.suggest_int("n_estimators", 100, 1000),
+            "n_estimators": trial.suggest_int("n_estimators", 100, 800),
             "max_depth": trial.suggest_int("max_depth", 3, 8),
             "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3, log=True),
             "subsample": trial.suggest_float("subsample", 0.6, 1.0),
@@ -86,13 +86,13 @@ def tune_xgboost(X_train, y_train, X_val, y_val, n_trials=50):
             "min_child_weight": trial.suggest_int("min_child_weight", 1, 10),
             "scale_pos_weight": scale_pos_weight,
             "eval_metric": "aucpr",
+            "early_stopping_rounds": 50,
             "random_state": 42,
             "n_jobs": -1,
             "verbosity": 0,
         }
         model = xgb.XGBClassifier(**params)
-        model.fit(X_train, y_train, eval_set=[(X_val, y_val)],
-                  early_stopping_rounds=50, verbose=False)
+        model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
         return average_precision_score(y_val, model.predict_proba(X_val)[:, 1])
 
     logger.info(f"Tuning XGBoost ({n_trials} trials)...")
@@ -188,7 +188,7 @@ class FraudEnsemble:
         return ensemble
 
 
-def build_ensemble(X_train, y_train, X_val, y_val, n_trials=50) -> FraudEnsemble:
+def build_ensemble(X_train, y_train, X_val, y_val, n_trials=30) -> FraudEnsemble:
     lgb_model, _, lgb_metrics = tune_lightgbm(X_train, y_train, X_val, y_val, n_trials)
     xgb_model, _, xgb_metrics = tune_xgboost(X_train, y_train, X_val, y_val, n_trials)
     ensemble = FraudEnsemble(lgb_model, xgb_model, lgb_metrics["pr_auc"], xgb_metrics["pr_auc"])
