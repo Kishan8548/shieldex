@@ -50,34 +50,51 @@ def _eval_spike():
     import json
     from src.models.spike_detector import SpikeDetector, evaluate_spike_detector
 
-    rng = np.random.default_rng(999)
+    rng = np.random.default_rng(42)
     N_NORMAL, N_BURST = 45, 5
-    all_merchants = [f"EVAL_{i:03d}" for i in range(N_NORMAL + N_BURST)]
-    burst_merchants = set(all_merchants[N_NORMAL:])
+    normal_merchants = [f"MERCH_NORM_{i:03d}" for i in range(N_NORMAL)]
+    burst_merchants = [f"MERCH_BURST_{i:03d}" for i in range(N_BURST)]
+    all_merchants = normal_merchants + burst_merchants
+    burst_set = set(burst_merchants)
+
+    # Interleaved chronological timeline of 120 timesteps
     transactions = []
     burst_start_indices = {}
+    BURST_TIMESTEP = 60
 
-    for mid in all_merchants[:N_NORMAL]:
-        for _ in range(200):
-            transactions.append({"merchant_id": mid, "fraud_score": float(rng.beta(1, 20))})
+    for t in range(120):
+        # Permute order within each timestep for realistic concurrency
+        current_step_merchants = list(all_merchants)
+        rng.shuffle(current_step_merchants)
 
-    for mid in burst_merchants:
-        for _ in range(50):
-            transactions.append({"merchant_id": mid, "fraud_score": float(rng.beta(1, 20))})
-        burst_start_indices[mid] = len(transactions)
-        for _ in range(50):
-            transactions.append({"merchant_id": mid, "fraud_score": float(rng.beta(8, 2))})
+        for mid in current_step_merchants:
+            is_burst_merch = mid in burst_set
+            is_in_burst_window = is_burst_merch and (t >= BURST_TIMESTEP)
 
-    rng.shuffle(transactions)
+            if is_burst_merch and t == BURST_TIMESTEP and mid not in burst_start_indices:
+                burst_start_indices[mid] = len(transactions)
+
+            if is_in_burst_window:
+                score = float(rng.uniform(0.80, 0.98))  # Attacking burst
+            else:
+                score = float(rng.beta(1, 80))          # Typical clean traffic (< 0.05)
+
+            transactions.append({
+                "merchant_id": mid,
+                "fraud_score": score
+            })
+
     detector = SpikeDetector(alpha=0.15, z_threshold=3.0, min_observations=20)
-    results = evaluate_spike_detector(detector, transactions, burst_merchants, burst_start_indices)
+    results = evaluate_spike_detector(detector, transactions, burst_set, burst_start_indices)
 
     Path("results").mkdir(exist_ok=True)
     with open("results/spike_detector_metrics.json", "w") as f:
         json.dump(results, f, indent=2)
-    logger.info(f"Spike eval: detection={results['detection_rate']:.1%} "
-                f"false_alarm={results['false_alarm_rate']:.1%}")
+    logger.info(f"Spike eval: detection={results['detection_rate']:.1%} | "
+                f"false_alarm={results['false_alarm_rate']:.1%} | "
+                f"latency={results['avg_detection_latency_txns']} txns")
 
 
 if __name__ == "__main__":
     main()
+

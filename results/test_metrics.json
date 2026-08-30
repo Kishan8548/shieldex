@@ -1,0 +1,30 @@
+{
+  "dataset": "test",
+  "threshold": 0.3596,
+  "n_samples": 56962,
+  "n_fraud": 98,
+  "n_legit": 56864,
+  "fraud_rate_pct": 0.172,
+  "precision": 0.8889,
+  "recall": 0.8163,
+  "f1_score": 0.8511,
+  "pr_auc": 0.861,
+  "roc_auc": 0.9841,
+  "true_positives": 80,
+  "false_positives": 10,
+  "true_negatives": 56854,
+  "false_negatives": 18,
+  "cost_matrix": {
+    "fn_cost_per_txn_inr": 5000,
+    "fp_cost_per_txn_inr": 150
+  },
+  "model_total_cost_inr": 91500,
+  "baselines": {
+    "flag_nothing_cost_inr": 490000,
+    "flag_everything_cost_inr": 8529600,
+    "threshold_0.5_cost_inr": 96050
+  },
+  "savings_vs_flag_nothing_inr": 398500,
+  "savings_vs_flag_everything_inr": 8438100,
+  "savings_vs_default_threshold_inr": 4550
+}
