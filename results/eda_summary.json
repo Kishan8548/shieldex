@@ -1,0 +1,141 @@
+{
+  "dataset_summary": {
+    "total_records": 284807,
+    "legit_records": 284315,
+    "fraud_records": 492,
+    "fraud_rate_percentage": 0.1727,
+    "imbalance_ratio": "1:577"
+  },
+  "amount_statistics": {
+    "legit": {
+      "mean": 88.29,
+      "median": 22.0,
+      "max": 25691.16,
+      "min": 0.0
+    },
+    "fraud": {
+      "mean": 122.21,
+      "median": 9.25,
+      "max": 2125.87,
+      "min": 0.0
+    }
+  },
+  "splits_summary": {
+    "train": {
+      "total": 199364,
+      "fraud": 345,
+      "fraud_rate": 0.1731
+    },
+    "val": {
+      "total": 28481,
+      "fraud": 49,
+      "fraud_rate": 0.172
+    },
+    "test": {
+      "total": 56962,
+      "fraud": 98,
+      "fraud_rate": 0.172
+    }
+  },
+  "feature_count": 36,
+  "features": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14",
+    "V15",
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21",
+    "V22",
+    "V23",
+    "V24",
+    "V25",
+    "V26",
+    "V27",
+    "V28",
+    "Amount",
+    "hour_of_day",
+    "day_of_week",
+    "is_weekend",
+    "is_night",
+    "merchant_avg_amount",
+    "merchant_txn_count",
+    "amount_vs_merchant_avg"
+  ],
+  "top_10_merchants_by_volume": [
+    {
+      "merchant_id": "MERCH_001",
+      "total_txns": 122159,
+      "fraud_txns": 215,
+      "fraud_rate": 0.0017600013097684166
+    },
+    {
+      "merchant_id": "MERCH_002",
+      "total_txns": 43133,
+      "fraud_txns": 56,
+      "fraud_rate": 0.001298309878747131
+    },
+    {
+      "merchant_id": "MERCH_003",
+      "total_txns": 23628,
+      "fraud_txns": 49,
+      "fraud_rate": 0.00207381073302861
+    },
+    {
+      "merchant_id": "MERCH_004",
+      "total_txns": 15101,
+      "fraud_txns": 33,
+      "fraud_rate": 0.002185285742666049
+    },
+    {
+      "merchant_id": "MERCH_005",
+      "total_txns": 11002,
+      "fraud_txns": 9,
+      "fraud_rate": 0.0008180330848936557
+    },
+    {
+      "merchant_id": "MERCH_006",
+      "total_txns": 8358,
+      "fraud_txns": 13,
+      "fraud_rate": 0.0015553960277578367
+    },
+    {
+      "merchant_id": "MERCH_007",
+      "total_txns": 6739,
+      "fraud_txns": 12,
+      "fraud_rate": 0.0017806796260572786
+    },
+    {
+      "merchant_id": "MERCH_008",
+      "total_txns": 5331,
+      "fraud_txns": 9,
+      "fraud_rate": 0.0016882386043894203
+    },
+    {
+      "merchant_id": "MERCH_009",
+      "total_txns": 4428,
+      "fraud_txns": 11,
+      "fraud_rate": 0.0024841915085817524
+    },
+    {
+      "merchant_id": "MERCH_010",
+      "total_txns": 3841,
+      "fraud_txns": 8,
+      "fraud_rate": 0.002082790939859412
+    }
+  ]
+}
