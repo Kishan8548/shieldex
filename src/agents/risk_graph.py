@@ -224,6 +224,7 @@ def draft_chargeback_defense_node(state: RiskInvestigationState) -> Dict[str, An
     packet = {
         "dispute_id": f"DISP-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{state['merchant_id'][-4:]}",
         "merchant_id": state["merchant_id"],
+        "applicable_rule": "Visa 10.4 / Mastercard 4837 (Fraud - Card Not Present)",
         "dispute_reason": "Card-Not-Present Fraud (Visa 10.4 / Mastercard 4837)",
         "disputed_amount_inr": state["amount_inr"],
         "compelling_evidence_checklist": [
