@@ -76,6 +76,8 @@ async def get_cost_sweep():
 )
 async def get_active_alerts():
     state = get_app_state()
+    if not state.spike_detector:
+        return []
     alerts = state.spike_detector.get_all_active_alerts()
     return [SpikeAlertResponse(**a) for a in alerts]
 
@@ -88,6 +90,8 @@ async def get_active_alerts():
 )
 async def get_alert_history():
     state = get_app_state()
+    if not state.spike_detector:
+        return []
     history = state.spike_detector.get_alert_history(limit=100)
     return [SpikeAlertResponse(**a) for a in history]
 
@@ -100,6 +104,8 @@ async def get_alert_history():
 )
 async def get_all_merchants():
     state = get_app_state()
+    if not state.spike_detector:
+        return []
     stats = state.spike_detector.get_all_merchant_stats()
     return [MerchantStatsResponse(**s) for s in stats if "ewma_mean" in s]
 
