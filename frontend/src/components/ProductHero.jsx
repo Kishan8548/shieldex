@@ -60,9 +60,9 @@ export default function ProductHero({ onLaunchTerminal }) {
       <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-8 items-center my-auto">
         {/* Left: Typography & Actions */}
         <div className="lg:col-span-7 space-y-6 text-left">
-          <div className="inline-flex items-center gap-2 rzp-badge rzp-badge-gold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#14110e] border border-[#E5A93C]/30 text-[11px] font-mono text-[#E5A93C]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#E5A93C] animate-pulse"></span>
-            <span>SUB-15MS DEFENSE • 56,962 HELD-OUT TESTS • 0.8610 PR-AUC</span>
+            <span>Sub-15ms Inference • 0.8610 PR-AUC • 56,962 Tests</span>
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-[#FAFAF9] leading-[1.1]">

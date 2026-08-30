@@ -51,12 +51,12 @@ def get_llm_instance(provider: Optional[str], api_key: Optional[str]):
         except Exception as e:
             logger.warning(f"Failed to init OpenAI: {e}")
 
-    # 3. Google Gemini
+    # 2. Google Gemini
     if prov in ("gemini", "auto") and (api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")):
         key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         try:
             from langchain_google_genai import ChatGoogleGenerativeAI
-            return ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0.1, google_api_key=key), "Google Gemini 2.0 Flash"
+            return ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.1, google_api_key=key), "Google Gemini 2.5 Flash"
         except Exception as e:
             logger.warning(f"Failed to init Gemini: {e}")
 

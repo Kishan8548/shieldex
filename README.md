@@ -1,4 +1,18 @@
-# Shieldex: Autonomous Payment Risk Engine
+<div align="center">
+
+# Shieldex
+**Autonomous Payment Risk Engine**
+
+[![Track](https://img.shields.io/badge/Track-Razorpay_AI_Risk_Manager-blue?style=flat-square&logo=razorpay&logoColor=white)](https://razorpay.com/buildathon/)
+[![PR-AUC](https://img.shields.io/badge/PR--AUC-0.8610-10b981?style=flat-square)](https://github.com/Kishan8548/shieldex)
+[![Latency](https://img.shields.io/badge/Latency-%3C_15ms-f59e0b?style=flat-square)](https://github.com/Kishan8548/shieldex)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+
+</div>
+
+---
 
 ## Executive Overview
 
@@ -49,7 +63,7 @@ flowchart TD
     subgraph Layer3["4. Layer 3: LangGraph Policy & Dispute Copilot"]
         TRIAGE["Node 1: Triage Signal Collector<br/>Aggregates ML Score, SHAP & Spike State"]
         RAG["Node 2: Semantic Policy RAG<br/>Vector Store: RBI 2FA & Visa/MC Rules"]
-        DELIB["Node 3: Autonomous Deliberation<br/>(Groq Llama-3.3-70B / Gemini 2.0-Flash / Offline)"]
+        DELIB["Node 3: Autonomous Deliberation<br/>(Groq Llama-3.3-70B / Gemini 2.5-Flash / Offline)"]
         DOSSIER["Node 4: Chargeback Dossier Drafter<br/>Compelling Evidence Checklist & Submission Letter"]
 
         ENS --> TRIAGE
@@ -107,20 +121,16 @@ $$\text{Total Cost} = C_{\text{FN}} \cdot \text{FN} + C_{\text{FP}} \cdot \text{
 - **Cost of False Positive ($C_{\text{FP}}$):** ₹150 (Cardholder SMS step-up, cart abandonment risk, and support overhead)
 - **Cost Ratio ($C_{\text{FN}} / C_{\text{FP}}$):** 33.33 : 1
 
-```mermaid
-gantt
-    title Cost Optimization Curve
-    dateFormat X
-    axisFormat %s
-    section Naive Baseline (Flag Nothing)
-    ₹490,000 Net Loss : 0, 490
-    section Standard 0.5 Threshold
-    ₹96,050 Net Loss : 0, 96
-    section Shieldex Cost-Optimized (τ = 0.3596)
-    ₹91,500 Net Loss (₹398,500 Saved) : 0, 91
-```
+### Cost Comparison on Held-Out Test Set (56,962 Transactions)
 
-By conducting Bayesian threshold optimization over the precision-recall curve, Shieldex operates at $\tau^* = 0.3596$, capturing 80 out of 98 fraud cases with only 10 false alarms across 56,962 transactions.
+| Operating Strategy | Decision Threshold ($\tau$) | Fraud Blocked (TP / 98) | False Alarms (FP) | Total Net Loss (INR) | Financial Savings vs Baseline |
+|---|---|---|---|---|---|
+| **Naive Baseline (Flag Nothing)** | $\tau = 1.0000$ | 0 | 0 | ₹490,000 | ₹0 |
+| **Naive Baseline (Flag All)** | $\tau = 0.0000$ | 98 | 56,864 | ₹8,529,600 | -₹8,039,600 (Catastrophic Friction) |
+| **Standard ML Default** | $\tau = 0.5000$ | 79 | 7 | ₹96,050 | +₹393,950 |
+| **Shieldex Cost-Tuned Engine** | **$\tau = 0.3596$** | **80** | **10** | **₹91,500** | **+₹398,500** |
+
+By conducting Bayesian threshold optimization over the empirical cost curve, Shieldex operates at $\tau^* = 0.3596$, minimizing total expected loss by capturing 80 out of 98 fraud cases while maintaining an ultra-low 0.017% false positive rate.
 
 ---
 
@@ -155,7 +165,7 @@ stateDiagram-v2
 
 ### Supported Reasoning Providers
 - **Groq Cloud:** `llama-3.3-70b-versatile` (Sub-30ms execution)
-- **Google Gemini:** `gemini-2.0-flash` & `gemini-1.5-pro` (Deep regulatory analysis)
+- **Google Gemini:** `gemini-2.5-flash` (High-speed regulatory reasoning)
 - **Built-in Offline Engine:** Deterministic rule engine grounded in vector policy store (Zero external dependencies)
 
 ### Automated Chargeback Dossier Structure
