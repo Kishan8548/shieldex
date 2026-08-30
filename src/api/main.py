@@ -9,6 +9,7 @@ from fastapi.responses import JSONResponse
 from src.api.state import load_models, get_app_state
 from src.api.routers.predict import router as predict_router
 from src.api.routers.metrics_alerts import metrics_router, alerts_router
+from src.api.routers.agent_router import router as agent_router
 from src.api.schemas import HealthResponse
 
 logging.basicConfig(
@@ -62,6 +63,7 @@ async def log_requests(request: Request, call_next):
 app.include_router(predict_router)
 app.include_router(metrics_router)
 app.include_router(alerts_router)
+app.include_router(agent_router)
 
 
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["System"])

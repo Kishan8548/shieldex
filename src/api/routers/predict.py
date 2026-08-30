@@ -4,7 +4,7 @@ FastAPI routers — predict endpoint.
 
 import time
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException
 from src.api.schemas import (
     TransactionRequest, BatchTransactionRequest,
@@ -76,7 +76,7 @@ async def predict_transaction(request: TransactionRequest):
         req_dict = request.model_dump()
 
         # Fill time features from timestamp if not provided
-        ts = request.timestamp or datetime.utcnow()
+        ts = request.timestamp or datetime.now(timezone.utc)
         if request.hour_of_day is None:
             req_dict["hour_of_day"] = ts.hour
         if request.day_of_week is None:
