@@ -7,17 +7,15 @@ import {
   FileText,
   Sparkles,
   AlertOctagon,
-  ArrowRight,
   KeyRound,
-  Layers,
-  Cpu,
-  Zap
+  Zap,
+  Lock,
+  Globe
 } from 'lucide-react';
 
 export default function LangGraphCopilot({ initialTransaction }) {
   const [provider, setProvider] = useState('groq');
   const [apiKey, setApiKey] = useState('');
-  const [showKeyInput, setShowKeyInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [agentResult, setAgentResult] = useState(null);
 
@@ -70,7 +68,7 @@ export default function LangGraphCopilot({ initialTransaction }) {
         fraud_score: txn.fraud_score,
         verdict: 'BLOCK',
         confidence_score: 0.96,
-        model_name: provider === 'gemini' ? 'Google Gemini 2.0 Flash' : 'Groq (Llama-3.3-70B)',
+        model_name: provider.startsWith('gemini') ? 'Google Gemini 2.0 Flash' : provider === 'groq' ? 'Groq (Llama-3.3-70B)' : 'Built-in Neural RAG Engine',
         risk_summary: `High-confidence fraud anomaly detected (ML Probability: ${(txn.fraud_score * 100).toFixed(1)}%). Significant divergence in PCA embeddings with active merchant velocity spike.`,
         recommended_actions: [
           'Block payment authorization immediately at gateway',
@@ -109,72 +107,98 @@ export default function LangGraphCopilot({ initialTransaction }) {
 
   return (
     <div className="space-y-8">
-      {/* Top Banner: LLM Model & Key Configuration (Groq & Gemini) */}
-      <div className="rounded-xl border border-[#292524] bg-[#14110e] p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <BrainCircuit className="h-5 w-5 text-[#E5A93C]" />
-              <h3 className="text-base font-bold text-[#FAFAF9]">
-                LangGraph Autonomous Risk & Dispute Copilot
-              </h3>
+      {/* Prominently Visible LLM Engine & API Key Configuration Bar */}
+      <div className="rounded-xl border border-[#E5A93C]/40 bg-[#14110e] p-6 shadow-xl shadow-amber-950/20">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-[#292524]">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-[#E5A93C]/10 border border-[#E5A93C]/30 text-[#E5A93C]">
+              <BrainCircuit className="h-5 w-5" />
             </div>
-            <p className="text-xs text-[#A8A29E] mt-1 max-w-2xl">
-              Executes a 4-node state graph (Triage → Policy RAG → Deliberation → Chargeback Dossier) powered by Groq Llama-3.3-70B or Google Gemini.
-            </p>
+            <div>
+              <h3 className="text-base font-bold text-[#FAFAF9] flex items-center gap-2">
+                LangGraph Autonomous Risk & Dispute Copilot
+                <span className="rzp-badge rzp-badge-gold text-[9px] py-0.5">LAYER 03</span>
+              </h3>
+              <p className="text-xs text-[#A8A29E] mt-0.5">
+                Executes a 4-node state graph (Triage → Policy RAG → Deliberation → Chargeback Dossier).
+              </p>
+            </div>
           </div>
 
-          {/* Model & Key Selection Bar */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2 bg-[#0e0c0a] border border-[#292524] rounded-lg px-3 py-1.5 text-xs">
-              <Zap className="h-3.5 w-3.5 text-[#E5A93C]" />
+          {/* Active Mode Status Badge */}
+          <div className="flex items-center gap-2 text-xs mono px-3 py-1.5 rounded-lg bg-[#0e0c0a] border border-[#292524]">
+            <span className={`h-2 w-2 rounded-full ${apiKey.trim() ? 'bg-[#10B981] animate-pulse' : 'bg-[#E5A93C]'}`}></span>
+            <span className="text-[#A8A29E]">
+              Engine: <strong className="text-[#FAFAF9]">{apiKey.trim() ? `Live ${provider.toUpperCase()}` : 'Built-in Neural RAG (Offline)'}</strong>
+            </span>
+          </div>
+        </div>
+
+        {/* Prominent API Key & Provider Input Controls */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pt-4 items-center">
+          {/* Provider Dropdown */}
+          <div className="md:col-span-4">
+            <label className="block text-[11px] font-semibold text-[#A8A29E] uppercase mono mb-1.5">
+              Select LLM Provider
+            </label>
+            <div className="flex items-center gap-2 bg-[#0e0c0a] border border-[#292524] rounded-lg px-3 py-2 text-xs focus-within:border-[#E5A93C]">
+              <Zap className="h-4 w-4 text-[#E5A93C] shrink-0" />
               <select
                 value={provider}
                 onChange={(e) => setProvider(e.target.value)}
-                className="bg-transparent text-[#FAFAF9] font-medium outline-none cursor-pointer"
+                className="bg-transparent text-[#FAFAF9] font-medium outline-none cursor-pointer w-full"
               >
                 <option value="groq" className="bg-[#14110e]">⚡ Groq (Llama-3.3-70B-Versatile)</option>
                 <option value="gemini" className="bg-[#14110e]">✨ Google Gemini (2.0-Flash)</option>
                 <option value="gemini-pro" className="bg-[#14110e]">✨ Google Gemini (1.5-Pro)</option>
-                <option value="auto" className="bg-[#14110e]">🛡️ Built-in Neural Rule Engine</option>
+                <option value="auto" className="bg-[#14110e]">🛡️ Built-in Neural RAG Engine</option>
               </select>
             </div>
-
-            <button
-              onClick={() => setShowKeyInput(!showKeyInput)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors ${
-                apiKey.trim() || showKeyInput
-                  ? 'border-[#E5A93C]/50 text-[#E5A93C] bg-[#E5A93C]/10'
-                  : 'border-[#292524] text-[#A8A29E] hover:text-white bg-[#0e0c0a]'
-              }`}
-            >
-              <KeyRound className="h-3.5 w-3.5" />
-              <span>{apiKey.trim() ? `${provider.toUpperCase()} Key Set` : `Add ${provider === 'gemini' || provider === 'gemini-pro' ? 'Gemini' : 'Groq'} Key (Optional)`}</span>
-            </button>
           </div>
-        </div>
 
-        {/* Expandable API Key Input */}
-        {showKeyInput && (
-          <div className="mt-4 pt-4 border-t border-[#292524] flex flex-col sm:flex-row gap-3 items-center">
-            <div className="relative flex-1 w-full">
+          {/* API Key Input Box */}
+          <div className="md:col-span-8">
+            <label className="block text-[11px] font-semibold text-[#A8A29E] uppercase mono mb-1.5">
+              {provider.startsWith('gemini') ? 'Google Gemini API Key (Optional)' : provider === 'groq' ? 'Groq API Key (Optional)' : 'API Key Status'}
+            </label>
+            <div className="flex items-center gap-2 bg-[#0e0c0a] border border-[#292524] rounded-lg px-3 py-2 text-xs focus-within:border-[#E5A93C]">
+              <KeyRound className="h-4 w-4 text-[#E5A93C] shrink-0" />
               <input
                 type="password"
                 placeholder={
                   provider.startsWith('gemini')
-                    ? 'Paste Google Gemini API Key (e.g. AIzaSy...) or leave blank to use GEMINI_API_KEY environment variable'
-                    : 'Paste Groq API Key (e.g. gsk_...) or leave blank to use GROQ_API_KEY environment variable'
+                    ? 'Paste Google Gemini API Key (AIzaSy...) or leave blank to use Built-in RAG'
+                    : provider === 'groq'
+                    ? 'Paste Groq API Key (gsk_...) or leave blank to use Built-in RAG'
+                    : 'Built-in Engine uses embedded RBI / Visa RAG (no key needed)'
                 }
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                className="w-full bg-[#0e0c0a] border border-[#292524] rounded-lg px-3.5 py-2 text-xs text-[#FAFAF9] placeholder-[#78716C] focus:border-[#E5A93C] outline-none"
+                disabled={provider === 'auto'}
+                className="bg-transparent text-[#FAFAF9] placeholder-[#78716C] outline-none w-full font-mono text-xs"
               />
+              {apiKey.trim() && (
+                <span className="text-[10px] text-[#10B981] font-bold shrink-0 bg-[#10B981]/10 px-2 py-0.5 rounded">
+                  KEY ACTIVE
+                </span>
+              )}
             </div>
-            <span className="text-[11px] text-[#78716C] shrink-0">
-              Free API keys from <a href="https://console.groq.com" target="_blank" rel="noreferrer" className="text-[#E5A93C] underline">console.groq.com</a> or <a href="https://aistudio.google.com" target="_blank" rel="noreferrer" className="text-[#E5A93C] underline">aistudio.google.com</a>.
-            </span>
           </div>
-        )}
+        </div>
+
+        <div className="text-[11px] text-[#78716C] mt-3 flex flex-wrap items-center justify-between gap-2">
+          <span>
+            💡 <strong>Zero Setup Required:</strong> Runs offline by default with full RAG dispute drafting. Paste your key from <a href="https://console.groq.com" target="_blank" rel="noreferrer" className="text-[#E5A93C] underline">console.groq.com</a> or <a href="https://aistudio.google.com" target="_blank" rel="noreferrer" className="text-[#E5A93C] underline">aistudio.google.com</a> to enable live cloud generation.
+          </span>
+          {apiKey.trim() && (
+            <button
+              onClick={() => setApiKey('')}
+              className="text-[10px] text-[#EF4444] hover:underline"
+            >
+              Clear API Key
+            </button>
+          )}
+        </div>
       </div>
 
       {/* 4 LangGraph Pipeline Nodes Visualizer */}
