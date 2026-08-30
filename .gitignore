@@ -21,6 +21,10 @@ data/processed/
 *.csv
 *.parquet
 
+# Private planning docs
+ai-risk-manager-implementation-plan.md
+*-implementation-plan.md
+
 # Models (will be regenerated)
 models/*.joblib
 models/*.pkl
