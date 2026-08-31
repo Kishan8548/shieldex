@@ -25,11 +25,8 @@ data/processed/
 ai-risk-manager-implementation-plan.md
 *-implementation-plan.md
 
-# Models (will be regenerated)
-models/*.joblib
-models/*.pkl
-models/*.json
-!models/.gitkeep
+# Models are tracked for cloud deployment (total < 6MB)
+# models/ is tracked
 
 # MLflow
 mlruns/

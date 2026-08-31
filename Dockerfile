@@ -29,9 +29,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code and models
+# Copy source code, models, and results
 COPY src/ ./src/
-COPY data/ ./data/
+COPY models/ ./models/
+COPY results/ ./results/
 
 # Copy built frontend bundle from Stage 1
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
