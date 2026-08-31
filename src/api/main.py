@@ -77,11 +77,33 @@ async def health_check():
     )
 
 
-@app.get("/", include_in_schema=False)
-async def root():
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+DIST_DIR = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+ASSETS_DIR = DIST_DIR / "assets"
+
+if ASSETS_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+async def serve_spa(full_path: str):
+    # Check if a static file in dist exists (e.g. favicon.ico, images)
+    target = DIST_DIR / full_path
+    if full_path and target.exists() and target.is_file():
+        return FileResponse(target)
+    
+    # Fallback to index.html for React SPA
+    index_path = DIST_DIR / "index.html"
+    if index_path.exists():
+        return FileResponse(index_path)
+    
     return JSONResponse({
-        "service": "Shieldex — Fraud-Spike Detector",
+        "service": "Shieldex — Autonomous Payment Risk Engine",
         "version": "1.0.0",
         "docs": "/docs",
         "health": "/api/v1/health",
     })
+
