@@ -1,0 +1,16 @@
+name: Render 5-Min Keep-Alive Ping
+
+on:
+  schedule:
+    # Runs every 10 minutes (GitHub Actions cron limit)
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Shieldex Live Backend
+        run: |
+          echo "Pinging Shieldex Live API on Render..."
+          curl -s -f -m 30 https://shieldex-api-ejvl.onrender.com/api/v1/health || echo "Ping failed or timed out"
