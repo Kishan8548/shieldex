@@ -1,14 +1,12 @@
 services:
   - type: web
-    name: shieldex
+    name: shieldex-api
     env: python
     region: singapore
     plan: free
-    buildCommand: cd frontend && npm install && npm run build && cd .. && pip install -r requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.0
-      - key: NODE_VERSION
-        value: 20.10.0
     healthCheckPath: /api/v1/health
