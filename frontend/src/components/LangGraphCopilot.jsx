@@ -68,7 +68,7 @@ export default function LangGraphCopilot({ initialTransaction }) {
         fraud_score: txn.fraud_score,
         verdict: 'BLOCK',
         confidence_score: 0.96,
-        model_name: provider.startsWith('gemini') ? 'Google Gemini 2.5 Flash' : provider === 'groq' ? 'Groq (Llama-3.3-70B)' : 'Built-in Neural RAG Engine',
+        model_name: provider.startsWith('gemini') ? 'Google Gemini 2.5 Flash' : provider === 'groq' ? 'Groq (GPT-OSS-120B)' : 'Built-in Neural RAG Engine',
         risk_summary: `High-confidence fraud anomaly detected (ML Probability: ${(txn.fraud_score * 100).toFixed(1)}%). Significant divergence in PCA embeddings with active merchant velocity spike.`,
         recommended_actions: [
           'Block payment authorization immediately at gateway',
@@ -148,7 +148,7 @@ export default function LangGraphCopilot({ initialTransaction }) {
                 onChange={(e) => setProvider(e.target.value)}
                 className="bg-transparent text-[#FAFAF9] font-medium outline-none cursor-pointer w-full"
               >
-                <option value="groq" className="bg-[#14110e]">⚡ Groq (Llama-3.3-70B-Versatile)</option>
+                <option value="groq" className="bg-[#14110e]">⚡ Groq (GPT-OSS-120B)</option>
                 <option value="gemini" className="bg-[#14110e]">✨ Google Gemini (2.5-Flash)</option>
                 <option value="auto" className="bg-[#14110e]">🛡️ Built-in Neural RAG Engine</option>
               </select>

@@ -38,7 +38,7 @@ def get_llm_instance(provider: Optional[str], api_key: Optional[str]):
         key = api_key or os.environ.get("GROQ_API_KEY")
         try:
             from langchain_groq import ChatGroq
-            return ChatGroq(model="llama-3.3-70b-versatile", temperature=0.1, api_key=key), "Groq (Llama-3.3-70b)"
+            return ChatGroq(model="openai/gpt-oss-120b", temperature=0.1, api_key=key), "Groq (GPT-OSS-120B)"
         except Exception as e:
             logger.warning(f"Failed to init Groq: {e}")
 

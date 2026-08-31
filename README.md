@@ -63,7 +63,7 @@ flowchart TD
     subgraph Layer3["4. Layer 3: LangGraph Policy & Dispute Copilot"]
         TRIAGE["Node 1: Triage Signal Collector<br/>Aggregates ML Score, SHAP & Spike State"]
         RAG["Node 2: Semantic Policy RAG<br/>Vector Store: RBI 2FA & Visa/MC Rules"]
-        DELIB["Node 3: Autonomous Deliberation<br/>(Groq Llama-3.3-70B / Gemini 2.5-Flash / Offline)"]
+        DELIB["Node 3: Autonomous Deliberation<br/>(Groq GPT-OSS-120B / Gemini 2.5-Flash / Offline)"]
         DOSSIER["Node 4: Chargeback Dossier Drafter<br/>Compelling Evidence Checklist & Submission Letter"]
 
         ENS --> TRIAGE
@@ -164,7 +164,7 @@ stateDiagram-v2
 ```
 
 ### Supported Reasoning Providers
-- **Groq Cloud:** `llama-3.3-70b-versatile` (Sub-30ms execution)
+- **Groq Cloud:** `openai/gpt-oss-120b` (Sub-30ms execution)
 - **Google Gemini:** `gemini-2.5-flash` (High-speed regulatory reasoning)
 - **Built-in Offline Engine:** Deterministic rule engine grounded in vector policy store (Zero external dependencies)
 
