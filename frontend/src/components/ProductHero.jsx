@@ -24,8 +24,8 @@ export default function ProductHero({ onLaunchTerminal }) {
       {/* Top Navigation */}
       <nav className="relative z-20 flex items-center justify-between max-w-7xl mx-auto w-full">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded bg-[#E5A93C]/10 border border-[#E5A93C]/30">
-            <ShieldCheck className="h-5 w-5 text-[#E5A93C]" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#14110e] border border-[#E5A93C]/30 p-1.5 shadow-sm">
+            <img src="/favicon.svg" alt="Shieldex Logo" className="h-full w-full object-contain" />
           </div>
           <div>
             <span className="font-extrabold tracking-tight text-white text-base tracking-wide">

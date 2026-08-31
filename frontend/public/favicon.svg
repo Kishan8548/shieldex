@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1c1815" />
+      <stop offset="100%" stop-color="#0a0806" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCD34D" />
+      <stop offset="50%" stop-color="#E5A93C" />
+      <stop offset="100%" stop-color="#B45309" />
+    </linearGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Outer Shield Border -->
+  <path d="M32 4L54 13.5V29C54 43.5 44.5 54.5 32 60C19.5 54.5 10 43.5 10 29V13.5L32 4Z" 
+        fill="url(#shieldGrad)" 
+        stroke="url(#goldGrad)" 
+        stroke-width="3" 
+        stroke-linejoin="round" />
+
+  <!-- Inner Circuit Shield -->
+  <path d="M32 10L48 17.5V29C48 39.5 41 48 32 53C23 48 16 39.5 16 29V17.5L32 10Z" 
+        fill="#14110e" 
+        stroke="#E5A93C" 
+        stroke-width="1" 
+        stroke-opacity="0.4" />
+
+  <!-- High-Tech Checkmark Core with Glow -->
+  <path d="M24 31.5L29.5 37L40.5 24.5" 
+        stroke="url(#goldGrad)" 
+        stroke-width="4" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        filter="url(#goldGlow)" />
+
+  <!-- Central Quantum Neural Dot -->
+  <circle cx="32" cy="18" r="2" fill="#E5A93C" />
+</svg>
